@@ -1,10 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 def get_links(target_url):
-    ## Make an HTTP request to the given URL
-    response = requests.get(target_url)
+    try:
+        ## Make an HTTP request to the given URL
+        response = requests.get(target_url)
+        response.raise_for_status()  # Raise an error for bad status codes
+    except requests.exceptions.RequestException as e:
+        print(f"Error accessing {target_url}: {e}")
+        return set()  # Return an empty set if there's an error
     
     ## Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.text, 'html.parser')
